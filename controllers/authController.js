@@ -48,7 +48,6 @@ export const signUp = tryCatch(async (req, res, next) => {
       });
 
       if (user) {
-            console.log(token);
             const token = generateToken(user._id.toHexString());
             res.cookie("jwt", token, {
                   httpOnly: true,

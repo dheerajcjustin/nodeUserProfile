@@ -22,7 +22,7 @@ server.use(cookieParser());
 server.use(morgan("dev"));
 
 server.get("/", (req, res) => {
-      res.json("hai wow good");
+      res.json("assessment task by voosh");
 });
 
 server.use("/api/v1/auth/", authRouter);
