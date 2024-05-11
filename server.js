@@ -25,11 +25,12 @@ server.get("/", (req, res) => {
       res.json("hai wow good");
 });
 
-server.use("/api/v1/auth", authRouter);
+server.use("/api/v1/auth/", authRouter);
 
-server.use("/api/v1/user", userRouter);
+server.use("/api/v1/user/", userRouter);
 
 server.use(notFound);
+
 server.use(errorHandler);
 
 mongooseConnect();

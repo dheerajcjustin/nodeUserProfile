@@ -1,7 +1,7 @@
 // import User, { Roles, AccountType } from "../models/User.js";
 import tryCatch from "../services/tryCatch.js";
 import handleUpload from "../services/fileUpload.js";
-import User from "../models/User.js";
+import User, { AccountType } from "../models/User.js";
 
 export const getProfile = tryCatch(async (req, res, next) => {
       const { _id: userId } = req.user;
@@ -32,10 +32,20 @@ export const updateProfile = tryCatch(async (req, res, next) => {
 
 export const updateProfilePic = tryCatch(async (req, res, next) => {
       try {
+            const { _id: userId } = req.user;
+
             const b64 = Buffer.from(req.file.buffer).toString("base64");
             let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
-            const cldRes = await handleUpload(dataURI);
-            res.json(cldRes);
+            const { url } = await handleUpload(dataURI);
+            const user = await User.findByIdAndUpdate(
+                  userId,
+                  { photo: url },
+                  {
+                        new: true,
+                  }
+            );
+
+            res.json(user);
       } catch (error) {
             console.log(error);
             res.send({
@@ -48,7 +58,7 @@ export const getUser = tryCatch(async (req, res, next) => {
       const { isAdmin } = req;
       const { page = 1, pageSize = 10 } = req.query;
 
-      const filter = isAdmin ? {} : { accountType: AccountType.Public };
+      const filter = isAdmin ? {} : { accountType: AccountType.public };
 
       const skip = (page - 1) * pageSize;
       const users = await User.find(filter, null, {
@@ -74,7 +84,7 @@ export const getUserById = tryCatch(async (req, res, next) => {
       const { isAdmin } = req;
       const filter = isAdmin
             ? { _id: req.userId }
-            : { _id: req.userId, accountType: AccountType.Public };
+            : { _id: req.userId, accountType: AccountType.public };
 
       const user = await User.findOne(filter);
 

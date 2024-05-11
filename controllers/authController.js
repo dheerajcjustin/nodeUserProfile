@@ -5,21 +5,17 @@ import tryCatch from "../services/tryCatch.js";
 export const login = tryCatch(async (req, res, next) => {
       const { email, password } = req.body;
 
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email }).select("+password");
       const isMatchPassword = await user.matchPassword(password);
 
       if (user && isMatchPassword) {
-            const token = generateToken(res, user._id);
+            const token = generateToken(user._id.toHexString());
 
             res.cookie("jwt", token, {
                   httpOnly: true,
                   // secure: process.env.NODE_ENV !== "development", // Use secure cookies in production
                   // sameSite: "strict", // Prevent CSRF attacks
                   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-            });
-            res.cookie("myCookie", "cookieValue", {
-                  maxAge: 30 * 24 * 60 * 60 * 1000,
-                  // httpOnly: true,
             });
 
             res.send({
@@ -52,7 +48,8 @@ export const signUp = tryCatch(async (req, res, next) => {
       });
 
       if (user) {
-            const token = generateToken(user._id);
+            console.log(token);
+            const token = generateToken(user._id.toHexString());
             res.cookie("jwt", token, {
                   httpOnly: true,
                   //   secure: process.env.NODE_ENV !== "development", // Use secure cookies in production
@@ -62,6 +59,7 @@ export const signUp = tryCatch(async (req, res, next) => {
 
             res.status(201).json({
                   _id: user._id,
+                  token,
                   name: user.name,
                   email: user.email,
                   role: user.role,
