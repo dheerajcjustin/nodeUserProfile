@@ -6,7 +6,7 @@ export const login = tryCatch(async (req, res, next) => {
       const { email, password } = req.body;
 
       const user = await User.findOne({ email }).select("+password");
-      const isMatchPassword = await user.matchPassword(password);
+      const isMatchPassword = await user?.matchPassword(password);
 
       if (user && isMatchPassword) {
             const token = generateToken(user._id.toHexString());
@@ -48,6 +48,7 @@ export const signUp = tryCatch(async (req, res, next) => {
       });
 
       if (user) {
+            console.log(token);
             const token = generateToken(user._id.toHexString());
             res.cookie("jwt", token, {
                   httpOnly: true,

@@ -58,7 +58,7 @@ const userSchema = new mongoose.Schema(
                   default: Roles.user,
             },
             phone: {
-                  type: String /*not required by default**/,
+                  type: String,
                   validate: {
                         validator: function (v) {
                               const re = /^\d{10}$/;
@@ -105,15 +105,6 @@ userSchema.pre("findOneAndUpdate", async function (next) {
             next(error);
       }
 });
-
-// userSchema.pre("updateOne", async function (next) {
-//       if (!this.isModified("password")) {
-//             return next();
-//       }
-
-//       const salt = await bcrypt.genSalt(10);
-//       this.password = await bcrypt.hash(this.password, salt);
-// });
 
 const User = mongoose.model("user", userSchema);
 
