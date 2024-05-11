@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import {
+      changePassword,
       getProfile,
       getUser,
       getUserById,
@@ -21,6 +22,8 @@ userRouter.post(
       uploadMulter.single("profilePic"),
       updateProfilePic
 );
+
+userRouter.post("/changePassword", changePassword);
 
 userRouter.get("/", getUser);
 userRouter.get("/:userId", parseUserId, getUserById);

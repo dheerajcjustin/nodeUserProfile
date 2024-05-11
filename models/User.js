@@ -90,10 +90,12 @@ userSchema.pre("findOneAndUpdate", async function (next) {
       try {
             const update = this.getUpdate();
             if (update.password) {
-                  // Hash the password before updating
                   const salt = await bcrypt.genSalt(10);
 
-                  const hashedPassword = await bcrypt.hash(update.password, 10);
+                  const hashedPassword = await bcrypt.hash(
+                        update.password,
+                        salt
+                  );
                   this.setUpdate({
                         $set: {
                               password: hashedPassword,

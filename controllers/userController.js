@@ -10,22 +10,42 @@ export const getProfile = tryCatch(async (req, res, next) => {
       res.send(user);
 });
 
+export const changePassword = tryCatch(async (req, res, next) => {
+      const { oldPassword, newPassword } = req.body;
+      const { _id: userId } = req.user;
+      const user = await User.findById(userId).select("+password");
+      const isMatchPassword = await user?.matchPassword(oldPassword);
+      if (!isMatchPassword)
+            return res.status(400).json({ error: "incorrect password" });
+
+      const userData = await User.findByIdAndUpdate(
+            userId,
+            { password: newPassword },
+
+            {
+                  new: true,
+            }
+      );
+      return res.send(userData);
+});
+
 export const updateProfile = tryCatch(async (req, res, next) => {
       const { _id: userId } = req.user;
 
-      const { name, bio, phone, email, password, accountType } = req.body;
+      const { name, bio, phone, email, accountType } = req.body;
 
       const updateFields = {};
       if (name) updateFields.name = name;
       if (bio) updateFields.bio = bio;
       if (phone) updateFields.phone = phone;
       if (email) updateFields.email = email;
-      if (password) updateFields.password = password;
       if (accountType) updateFields.accountType = accountType;
 
       const user = await User.findByIdAndUpdate(
             userId,
-            { $set: updateFields },
+            // { $set: updateFields },
+            updateFields,
+
             {
                   new: true,
             }
