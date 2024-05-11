@@ -23,9 +23,13 @@ export const updateProfile = tryCatch(async (req, res, next) => {
       if (password) updateFields.password = password;
       if (accountType) updateFields.accountType = accountType;
 
-      const user = await User.findByIdAndUpdate(userId, updateFields, {
-            new: true,
-      });
+      const user = await User.findByIdAndUpdate(
+            userId,
+            { $set: updateFields },
+            {
+                  new: true,
+            }
+      );
 
       res.send(user);
 });
@@ -40,7 +44,7 @@ export const updateProfilePic = tryCatch(async (req, res, next) => {
 
             const user = await User.findByIdAndUpdate(
                   userId,
-                  { photo: { url, photoId: public_id } },
+                  { $set: { photo: { url, photoId: public_id } } },
                   {
                         new: true,
                   }
