@@ -20,3 +20,15 @@ const storage = new Multer.memoryStorage();
 export const uploadMulter = Multer({
       storage,
 });
+
+export const fileDelete = (url) => {
+      if (!url?.photoId) return;
+
+      cloudinary.uploader.destroy(url?.photoId, (error, result) => {
+            if (error) {
+                  console.error(error);
+            } else {
+                  console.log(result);
+            }
+      });
+};

@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema(
                   },
             },
             bio: String,
-            photo: String,
+            photo: { url: String, photoId: String },
       },
       { timestamps: true }
 );

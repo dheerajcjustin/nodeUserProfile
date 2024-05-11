@@ -1,6 +1,6 @@
 // import User, { Roles, AccountType } from "../models/User.js";
 import tryCatch from "../services/tryCatch.js";
-import handleUpload from "../services/fileUpload.js";
+import handleUpload, { fileDelete } from "../services/fileUpload.js";
 import User, { AccountType } from "../models/User.js";
 
 export const getProfile = tryCatch(async (req, res, next) => {
@@ -36,14 +36,17 @@ export const updateProfilePic = tryCatch(async (req, res, next) => {
 
             const b64 = Buffer.from(req.file.buffer).toString("base64");
             let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
-            const { url } = await handleUpload(dataURI);
+            const { url, public_id } = await handleUpload(dataURI);
+
             const user = await User.findByIdAndUpdate(
                   userId,
-                  { photo: url },
+                  { photo: { url, photoId: public_id } },
                   {
                         new: true,
                   }
             );
+
+            fileDelete(req?.user?.photo);
 
             res.json(user);
       } catch (error) {
