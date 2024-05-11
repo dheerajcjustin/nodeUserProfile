@@ -1,27 +1,39 @@
 // User.js
 
-import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+import mongoose from "mongoose";
 export const Roles = {
       admin: "admin",
       user: "user",
 };
 
 export const AccountType = {
-      Public: "public",
+      public: "public",
       private: "private",
 };
+
+const AccountTypeEnum = [AccountType.Public, AccountType.private];
+
+const RolesEnum = [Roles.admin, Roles.user];
+
 const userSchema = new mongoose.Schema(
       {
             name: {
                   type: String,
                   required: true,
+                  trim: true, // Trim leading/trailing whitespaces
+                  validate: {
+                        validator: function (v) {
+                              return v && v.trim().length; // Check if trimmed value exists
+                        },
+                        message: "Name is required and cannot be empty.",
+                  },
             },
             accountType: {
                   type: String,
-                  enum: [AccountType.Public, AccountType.private],
-                  default: AccountType.Public,
+                  enum: AccountTypeEnum,
+                  default: AccountType.public,
             },
 
             email: {
@@ -44,8 +56,8 @@ const userSchema = new mongoose.Schema(
             role: {
                   required: true,
                   type: String,
-                  enum: [Roles.ADMIN, Roles.USER],
-                  default: Roles.USER,
+                  enum: RolesEnum,
+                  default: Roles.user,
             },
             phone: {
                   type: String /*not required by default**/,
@@ -58,7 +70,7 @@ const userSchema = new mongoose.Schema(
                   },
             },
             bio: String,
-            phone: String,
+            photo: String,
       },
       { timestamps: true }
 );

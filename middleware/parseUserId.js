@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export const validateTeamId = (req, res, next) => {
+const parseUserId = (req, res, next) => {
       const { userId } = req.params; // Use teamId consistently
 
       if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -16,3 +16,5 @@ export const validateTeamId = (req, res, next) => {
             return res.status(400).json({ error: "Invalid Team ID" });
       }
 };
+
+export default parseUserId;

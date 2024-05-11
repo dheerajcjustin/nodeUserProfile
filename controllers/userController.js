@@ -1,6 +1,7 @@
 import User, { Roles } from "../models/User";
 import tryCatch from "../services/tryCatch";
 import { AccountType } from "../models/User";
+import handleUpload from "../services/fileUpload";
 
 export const getProfile = tryCatch(async (req, res, next) => {
       const { _id: userId } = req.user;
@@ -12,21 +13,35 @@ export const getProfile = tryCatch(async (req, res, next) => {
 export const updateProfile = tryCatch(async (req, res, next) => {
       const { _id: userId } = req.user;
 
-      const { photo, name, bio, phone, email, password } = req.body;
+      const { name, bio, phone, email, password, accountType } = req.body;
 
       const updateFields = {};
-      if (photo) updateFields.photo = photo;
       if (name) updateFields.name = name;
       if (bio) updateFields.bio = bio;
       if (phone) updateFields.phone = phone;
       if (email) updateFields.email = email;
       if (password) updateFields.password = password;
+      if (accountType) updateFields.accountType = accountType;
 
       const user = await User.findByIdAndUpdate(userId, updateFields, {
             new: true,
       });
 
       res.send(user);
+});
+
+export const updateProfilePic = tryCatch(async (req, res, next) => {
+      try {
+            const b64 = Buffer.from(req.file.buffer).toString("base64");
+            let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+            const cldRes = await handleUpload(dataURI);
+            res.json(cldRes);
+      } catch (error) {
+            console.log(error);
+            res.send({
+                  message: error.message,
+            });
+      }
 });
 
 export const getUser = tryCatch(async (req, res, next) => {

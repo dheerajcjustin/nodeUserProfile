@@ -23,10 +23,11 @@ export const login = tryCatch(async (req, res, next) => {
             });
 
             res.send({
+                  token,
                   _id: user._id,
                   name: user.name,
                   email: user.email,
-                  subscriptions: user.subscriptions,
+                  role: user.role,
             });
       } else {
             res.status(401);
