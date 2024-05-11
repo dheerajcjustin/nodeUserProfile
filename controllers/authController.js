@@ -1,6 +1,6 @@
-import User from "../models/User";
-import generateToken from "../services/generateToken";
-import tryCatch from "../services/tryCatch";
+import User from "../models/User.js";
+import generateToken from "../services/generateToken.js";
+import tryCatch from "../services/tryCatch.js";
 
 export const login = tryCatch(async (req, res, next) => {
       const { email, password } = req.body;

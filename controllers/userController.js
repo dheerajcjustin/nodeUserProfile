@@ -1,7 +1,7 @@
-import User, { Roles } from "../models/User";
-import tryCatch from "../services/tryCatch";
-import { AccountType } from "../models/User";
-import handleUpload from "../services/fileUpload";
+// import User, { Roles, AccountType } from "../models/User.js";
+import tryCatch from "../services/tryCatch.js";
+import handleUpload from "../services/fileUpload.js";
+import User from "../models/User.js";
 
 export const getProfile = tryCatch(async (req, res, next) => {
       const { _id: userId } = req.user;
